@@ -58,10 +58,10 @@ with tab1:
         temp_umbral = st.slider("Umbral temperatura (°C) — mayor que", 15, 40, 30)
         hum_umbral = st.slider("Umbral humedad (%) — menor que", 20, 80, 40)
 
-    temps, hums = generar_datos(n)
+    temps, hums, fds = generar_datos(n)
 
     with col_cfg:
-        alarmas = alarma_logica_vectorizada(temps, hums, temp_umbral, hum_umbral)
+        alarmas = alarma_logica_vectorizada(temps, hums, fds, temp_umbral, hum_umbral)
         st.metric("Alarmas detectadas", f"{alarmas.sum()} / {n}")
 
     with col_data:
