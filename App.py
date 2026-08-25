@@ -139,7 +139,7 @@ with tab3:
     hum_umbral_b = st.slider("Umbral humedad (%)", 20, 80, 40, key="hum_bench")
 
     if st.button("▶️ Ejecutar benchmark", type="primary"):
-        temps_b, hums_b, fds = generar_datos(n_bench)
+        temps_b, hums_b = generar_datos(n_bench)
 
         # perf_counter tiene mucha más resolución que time.time(), y repetimos
         # varias veces porque la versión vectorizada puede ser demasiado rápida
