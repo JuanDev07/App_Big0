@@ -25,18 +25,19 @@ def generar_datos(n, seed=42):
     rng = np.random.default_rng(seed)
     temperaturas = rng.uniform(15, 40, n)
     humedades = rng.uniform(20, 80, n)
-    return temperaturas, humedades
+    es_fin_de_semana = rng.choice([True, False], size=n)
+    return temperaturas, humedades, es_fin_de_semana
 
-
-def alarma_logica_loop(temperaturas, humedades, temp_umbral, hum_umbral):
+# Versión Loop Puro
+def alarma_logica_loop(temperaturas, humedades, es_fds, temp_umbral, hum_umbral):
     resultados = []
-    for temp, hum in zip(temperaturas, humedades):
-        resultados.append(temp > temp_umbral and hum < hum_umbral)
+    for temp, hum, fds in zip(temperaturas, humedades, es_fds):
+        resultados.append(temp > temp_umbral and hum < hum_umbral and not fds)
     return np.array(resultados)
 
-
-def alarma_logica_vectorizada(temperaturas, humedades, temp_umbral, hum_umbral):
-    return (temperaturas > temp_umbral) & (humedades < hum_umbral)
+# Versión Vectorizada (NumPy)
+def alarma_logica_vectorizada(temperaturas, humedades, es_fds, temp_umbral, hum_umbral):
+    return (temperaturas > temp_umbral) & (humedades < hum_umbral) & (~es_fds)
 
 
 # ---------------------------------------------------------------------------
