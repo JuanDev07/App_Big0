@@ -124,22 +124,39 @@ with tab2:
 # Tab 3: Benchmark en vivo
 # ---------------------------------------------------------------------------
 with tab3:
+    st.subheader("Loop vs. NumPy: misma lógica, distinta velocidad real")
+    st.write(
+        "Ejecuta la misma condición lógica sobre datos sintéticos, una vez con un loop "
+        "de Python puro y otra vez vectorizada con NumPy, y compara el tiempo real."
+    )
+
+    n_bench = st.select_slider(
+        "Tamaño de datos para el benchmark",
+        options=[1_000, 10_000, 100_000, 500_000, 1_000_000],
+        value=100_000,
+    )
+    temp_umbral_b = st.slider("Umbral temperatura (°C)", 15, 40, 30, key="temp_bench")
+    hum_umbral_b = st.slider("Umbral humedad (%)", 20, 80, 40, key="hum_bench")
+
     if st.button("▶️ Ejecutar benchmark", type="primary"):
-        # 1. CORRECCIÓN: Desempaquetar los 3 valores (agregando fds_b)
+        # 1. AQUÍ ESTÁ LA CORRECCIÓN: Desempaquetar los 3 valores (agregando fds_b)
         temps_b, hums_b, fds_b = generar_datos(n_bench)
 
+        # perf_counter tiene mucha más resolución que time.time(), y repetimos
+        # varias veces porque la versión vectorizada puede ser demasiado rápida
+        # para medirse de forma confiable en una sola corrida.
         repeticiones_loop = 1
         repeticiones_vec = 20
 
         inicio = time.perf_counter()
         for _ in range(repeticiones_loop):
-            # 2. CORRECCIÓN: Agregar fds_b a la llamada de la función
+            # 2. AQUÍ ESTÁ LA CORRECCIÓN: Agregar fds_b a la función
             alarma_logica_loop(temps_b, hums_b, fds_b, temp_umbral_b, hum_umbral_b)
         t_loop = (time.perf_counter() - inicio) / repeticiones_loop
 
         inicio = time.perf_counter()
         for _ in range(repeticiones_vec):
-            # 3. CORRECCIÓN: Agregar fds_b a la llamada de la función
+            # 3. AQUÍ ESTÁ LA CORRECCIÓN: Agregar fds_b a la función
             alarma_logica_vectorizada(temps_b, hums_b, fds_b, temp_umbral_b, hum_umbral_b)
         t_vec = (time.perf_counter() - inicio) / repeticiones_vec
 
@@ -166,6 +183,6 @@ with tab3:
         ax3.set_ylabel("Tiempo (milisegundos)")
         ax3.grid(alpha=0.3, axis="y")
         st.pyplot(fig3)
-    
-
+    else:
+        st.caption("Ajusta los parámetros y presiona **Ejecutar benchmark** para ver el resultado.")
 
